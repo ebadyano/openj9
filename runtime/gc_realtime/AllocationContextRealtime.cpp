@@ -143,10 +143,8 @@ MM_AllocationContextRealtime::allocateLarge(MM_EnvironmentBase *env, UDATA sizeI
 
 	/* Call parent to try to get a large object region */
 	UDATA *result =  MM_AllocationContextSegregated::allocateLarge(env, sizeInBytesRequired);
-//TODO SATB extract into a method
-	if ((NULL != result) && (GC_MARK == ((MM_EnvironmentRealtime *) env)->getAllocationColor())) {
-		ext->realtimeGC->getMarkingScheme()->mark((omrobjectptr_t)result);
-	}
+
+	ext->realtimeGC->getMarkingScheme()->getMarkMap()->markLargeAllocation(env, (omrobjectptr_t)result);
 
 	return result;
 }
